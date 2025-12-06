@@ -19,7 +19,14 @@ db_name = os.environ.get('DB_NAME', 'sustainability_db')
 if not mongo_url:
     raise ValueError("MONGO_URL environment variable is required")
 
-client = AsyncIOMotorClient(mongo_url)
+# Add TLS options for cloud deployments (Railway, Render, etc.)
+client = AsyncIOMotorClient(
+    mongo_url,
+    tls=True,
+    tlsAllowInvalidCertificates=True,
+    serverSelectionTimeoutMS=30000,
+    connectTimeoutMS=30000
+)
 database = client[db_name]
 
 def get_database():
