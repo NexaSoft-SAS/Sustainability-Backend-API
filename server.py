@@ -123,20 +123,28 @@ app.include_router(api_router)
 # Error handlers
 @app.exception_handler(404)
 async def not_found_handler(request, exc):
-    return {
-        "error": "Not Found",
-        "message": "The requested resource was not found",
-        "status_code": 404
-    }
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": "Not Found",
+            "message": "The requested resource was not found",
+            "status_code": 404
+        }
+    )
 
 @app.exception_handler(500)
 async def internal_error_handler(request, exc):
+    from fastapi.responses import JSONResponse
     logger.error(f"Internal server error: {str(exc)}")
-    return {
-        "error": "Internal Server Error", 
-        "message": "An internal server error occurred",
-        "status_code": 500
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal Server Error", 
+            "message": "An internal server error occurred",
+            "status_code": 500
+        }
+    )
 
 if __name__ == "__main__":
     import uvicorn
